@@ -1,10 +1,10 @@
-streamlit
-pandas
-numpy
-joblib
-matplotlib
-seaborn
-scikit-learn
-xgboost
-streamlit-lottie
-requests
+# Python 3.12+ (sintaxe dos notebooks)
+streamlit>=1.40,<2
+pandas>=2.2,<3
+numpy>=1.26,<3
+joblib>=1.4,<2
+matplotlib>=3.8,<4
+seaborn>=0.13,<1
+scikit-learn>=1.5,<1.10
+xgboost>=2.1,<4
+ipykernel>=6.29,<7

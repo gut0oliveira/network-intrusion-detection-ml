@@ -1,269 +1,71 @@
-<h1 align="center">Detecção de Ataques Cibernéticos com Machine Learning</h1>
+# Network Intrusion Detection with Machine Learning
 
-<p align="center">
-  Sistema de classificação de tráfego de rede utilizando Machine Learning para identificação de tráfego benigno e diferentes tipos de ataques cibernéticos.
-</p>
+Trabalho de Conclusão de Curso (TCC) de classificação de tráfego de rede: binário (benigno/malicioso) e multiclasse (categorias de ataques). A interface Streamlit recebe atributos numéricos em CSV; não analisa executáveis nem faz engenharia reversa de binários.
 
-## Sobre o projeto
+## Estado da revisão
 
-Este projeto aplica técnicas de **Data Science e Machine Learning** à análise de tráfego de rede com o objetivo de identificar padrões associados a atividades maliciosas.
+O código foi revisado para ajustar imputação e padronização dentro de cada treino e fold de validação, preservar os mapas de classes do XGBoost e exportar pipelines completas. **As métricas antigas não representam esta versão.** As saídas dos notebooks foram limpas e precisam ser recalculadas com os datasets completos.
 
-O desenvolvimento contempla diferentes etapas de um pipeline de Ciência de Dados, incluindo preparação dos dados, análise exploratória, engenharia de atributos, treinamento de modelos e disponibilização das previsões por meio de uma aplicação interativa desenvolvida em **Streamlit**.
+O antigo download de modelos não é compatível com o contrato atual. A aplicação aceita apenas artefatos locais de versão 2 gerados pelo notebook corrigido. Não há modelo retreinado distribuído neste checkout.
 
-A solução permite trabalhar com dois tipos de problema:
+## Instalação e aplicação
 
-- **Classificação Binária:** diferencia tráfego benigno de tráfego malicioso.
-- **Classificação Multiclasse:** identifica diferentes categorias de ataques presentes no tráfego de rede.
+Python 3.12 ou superior:
 
-## Pipeline do projeto
-
-O projeto foi dividido em quatro principais etapas:
-
-### 1. Pré-processamento dos dados
-
-Preparação dos dados utilizados pelos modelos de Machine Learning, incluindo limpeza, tratamento e padronização das informações.
-
-### 2. Análise Exploratória de Dados (EDA)
-
-Investigação das características dos dados de tráfego de rede para identificar distribuições, padrões e diferenças entre tráfego benigno e malicioso.
-
-### 3. Feature Engineering
-
-Preparação e seleção das variáveis utilizadas no treinamento dos modelos preditivos.
-
-### 4. Machine Learning
-
-Treinamento e avaliação de diferentes algoritmos para os cenários de classificação binária e multiclasse.
-
-## Modelos utilizados
-
-### Classificação Binária
-
-- Logistic Regression
-- Support Vector Machine (SVM)
-
-### Classificação Multiclasse
-
-- Random Forest
-- K-Nearest Neighbors (KNN)
-- XGBoost
-
-Os modelos treinados são utilizados posteriormente pela aplicação Streamlit para realizar previsões sobre novos dados de tráfego de rede.
-
-## Funcionalidades da aplicação
-
-- Upload de arquivos CSV contendo dados de tráfego de rede
-- Identificação automática do tipo de classificação quando possível
-- Seleção manual entre classificação binária e multiclasse
-- Seleção do modelo de Machine Learning
-- Execução de previsões
-- Exibição das probabilidades previstas
-- Visualização da distribuição das previsões
-- Gráficos para análise dos resultados
-- Heatmap das probabilidades na classificação multiclasse
-
-## Tecnologias
-
-- **Python**
-- **Pandas**
-- **NumPy**
-- **Scikit-learn**
-- **XGBoost**
-- **Matplotlib**
-- **Seaborn**
-- **Streamlit**
-- **Joblib**
-- **Jupyter Notebook**
-
-## Estrutura do projeto
-
-```text
-Data-Science-Capstone/
-├── amostras/
-│   ├── amostra_1.csv
-│   ├── amostra_2.csv
-│   ├── amostra_3.csv
-│   ├── amostra_4.csv
-│   ├── amostra_5.csv
-│   └── amostra_6.csv
-│
-├── notebooks/
-│   ├── 1-data-preprocessing.ipynb
-│   ├── 2-exploratory-data-analysis.ipynb
-│   ├── 3-feature-engineering.ipynb
-│   └── 4-ml-models.ipynb
-│
-├── scripts/
-│   ├── app.py
-│   ├── arquivos.py
-│   └── visuals.py
-│
-├── Resumo Executivo - Engenharia Reversa de Malware.pdf
-├── requirements.txt
-├── LICENSE
-└── README.md
-```
-
-## Como instalar e executar
-
-### 1. Clone o repositório
-
-```bash
-git clone https://github.com/gut0oliveira/Data-Science-Capstone.git
-cd Data-Science-Capstone
-```
-
-### 2. Crie um ambiente virtual
-
-```bash
+```powershell
 python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m streamlit run scripts/app.py
 ```
 
-No Windows:
+Abra http://localhost:8501. Sem modelos, a interface explica o que falta e interrompe a inferência de forma controlada.
 
-```bash
-.venv\Scripts\activate
+## Dados e reprodução
+
+Os notebooks usam os conjuntos IDS2017 e IDS2018 mencionados no trabalho original. Os dados completos não estão versionados. A revisão não baixou nem validou novamente a procedência desses arquivos.
+
+Execute os notebooks na ordem 1 a 4, com o kernel da `.venv`:
+
+1. `1-data-preprocessing.ipynb`: CSVs originais de 2017 em `dados/brutos/IDS2017/`. Para 2018, mantenha também `dados/brutos/IDS2018/` e os três agregados originais `IDS-2018-1-COMPLETO.csv`, `IDS-2018-2-COMPLETO.csv` e `IDS-2018-3-COMPLETO.csv` em `dados/brutos/`. A composição desses grupos não está registrada no código original; esta revisão não inventa uma nova divisão.
+2. `2-exploratory-data-analysis.ipynb`: análise dos arquivos em `dados/processados/`.
+3. `3-feature-engineering.ipynb`: exportação para `dados/feature/`, incluindo os DataFrames de 2018 com colunas constantes removidas.
+4. `4-ml-models.ipynb`: separação estratificada, pipelines com imputação/padronização ajustadas no treino, validação cruzada e avaliação. Exporta `models/modelos.pkl`.
+
+O artefato contém as cinco pipelines de 2017, ordem das features, mapa de classes para XGBoost e versões do ambiente, sem incorporar datasets completos. Os experimentos de 2018 permanecem nos notebooks. Reinicie o kernel antes da nova execução completa.
+
+## Uso dos CSVs
+
+Selecione a tarefa e o modelo explicitamente. A coluna opcional `Tipos de Ataques` é descartada antes da inferência. O aplicativo exige as mesmas features do treino, ordena as colunas e rejeita ausentes, extras e valores não numéricos. Nulos e infinitos passam pela imputação aprendida no treino.
+
+As seis amostras em `amostras/` são apenas exemplos de formato; podem incluir registros usados no estudo e não são um conjunto independente para medir generalização. Os números de classe do XGBoost são convertidos de volta aos nomes originais.
+
+Para gerar outra amostra, sem sobrescrever arquivos existentes:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/arquivos.py dados/feature/IDS-2017-FEATURE.csv --output amostras/nova.csv --rows 100
 ```
 
-No Linux/macOS:
+## Validação técnica
 
-```bash
-source .venv/bin/activate
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-### 3. Instale as dependências
+Os testes de integração usam amostras pequenas e modelos temporários. Não substituem o treinamento completo nem geram métricas de portfólio.
 
-```bash
-pip install -r requirements.txt
-```
+## Limitações metodológicas
 
-### 4. Baixe os modelos treinados
+- A amostragem balanceada muda a prevalência do problema; resultados não representam automaticamente tráfego real.
+- A seleção multiclasse mantém os limites do estudo (2017: mais de 1.950 registros por classe; 2018: mais de 800; até 9.000 por classe).
+- A divisão aleatória não mede generalização temporal nem para outra rede.
+- A exclusão de colunas constantes é exploratória e ocorre antes do split; uma avaliação final independente deve também revisar essa seleção.
+- As medianas de imputação e os parâmetros de escala são aprendidos apenas dentro das pipelines, inclusive na validação cruzada.
+- Não há novas métricas de produção nesta revisão.
 
-O arquivo `modelos.pkl` possui aproximadamente **111 MB** e, por isso, não está armazenado diretamente neste repositório.
+## Documentação acadêmica
 
-➡️ **[Baixar modelos.pkl](https://drive.google.com/uc?export=download&id=1G2KdSuNIB2AhkjIxHYltHwDCeeYp3XHn)**
+O PDF `Resumo Executivo - Engenharia Reversa de Malware.pdf` foi preservado como documento histórico, com seu título original. O nome do repositório descreve a implementação de detecção de intrusões em tráfego de rede.
 
-Após o download, coloque o arquivo dentro da pasta:
+## Licença
 
-```text
-notebooks/modelos.pkl
-```
-
-A estrutura deverá ficar assim:
-
-```text
-notebooks/
-├── 1-data-preprocessing.ipynb
-├── 2-exploratory-data-analysis.ipynb
-├── 3-feature-engineering.ipynb
-├── 4-ml-models.ipynb
-└── modelos.pkl
-```
-
-### 5. Execute a aplicação
-
-Acesse a pasta `scripts`:
-
-```bash
-cd scripts
-```
-
-Execute o Streamlit:
-
-```bash
-streamlit run app.py
-```
-
-A aplicação será disponibilizada localmente em:
-
-```text
-http://localhost:8501
-```
-
-## Como usar a aplicação
-
-### 1. Faça o upload dos dados
-
-Na aplicação, faça upload de um arquivo `.csv` contendo os dados de tráfego de rede que serão analisados.
-
-Para facilitar os testes, o repositório possui arquivos de exemplo disponíveis na pasta:
-
-```text
-amostras/
-```
-
-### 2. Defina o tipo de classificação
-
-A aplicação trabalha com dois cenários:
-
-- **Classificação Binária:** identifica se o tráfego é benigno ou malicioso.
-- **Classificação Multiclasse:** identifica diferentes categorias de ataques.
-
-Quando o arquivo contém a coluna `Tipos de Ataques`, a aplicação identifica automaticamente o tipo de classificação com base nos dados disponíveis.
-
-Caso essa informação não esteja disponível, é possível selecionar manualmente entre:
-
-- Binário
-- Multiclasse
-
-### 3. Escolha o modelo
-
-Para **Classificação Binária**, estão disponíveis:
-
-- Logistic Regression
-- Support Vector Machine (SVM)
-
-Para **Classificação Multiclasse**, estão disponíveis:
-
-- Random Forest
-- K-Nearest Neighbors (KNN)
-- XGBoost
-
-### 4. Execute a previsão
-
-Após selecionar o modelo desejado, clique em:
-
-**🔍 Realizar Previsão**
-
-A aplicação processará os registros utilizando o modelo selecionado.
-
-### 5. Analise os resultados
-
-#### Classificação Binária
-
-A aplicação apresenta:
-
-- Probabilidade de tráfego benigno
-- Probabilidade de tráfego malicioso
-- Classe prevista para cada registro
-- Distribuição das previsões
-- Proporção entre tráfego benigno e malicioso
-
-#### Classificação Multiclasse
-
-A aplicação apresenta:
-
-- Probabilidade associada a cada classe de ataque
-- Classe prevista para cada registro
-- Distribuição das classes previstas
-- Heatmap das probabilidades de classificação
-
-## Interface da aplicação
-
-Caso todas as etapas tenham sido executadas corretamente, a aplicação apresentará uma interface semelhante à imagem abaixo:
-
-![Aplicação Streamlit](https://github.com/user-attachments/assets/55744db9-be76-4eef-ba8b-abe72ded8d08)
-
-Após carregar um dos arquivos disponíveis em `amostras/`, basta selecionar o modelo desejado e executar a previsão.
-
-## Documentação
-
-O repositório também contém um resumo executivo com uma visão geral do projeto, metodologia utilizada e principais etapas desenvolvidas:
-
-📄 **[Resumo Executivo — Engenharia Reversa de Malware](https://github.com/gut0oliveira/Data-Science-Capstone/blob/main/Resumo%20Executivo%20-%20Engenharia%20Reversa%20de%20Malware.pdf)**
-
-## Autor
-
-**Augusto Oliveira**
-
-[LinkedIn](https://www.linkedin.com/in/augusto-oS/) • [GitHub](https://github.com/gut0oliveira)
+Veja [LICENSE](LICENSE). As condições dos datasets e de materiais de terceiros permanecem próprias.

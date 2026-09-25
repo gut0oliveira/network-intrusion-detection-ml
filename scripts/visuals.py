@@ -1,8 +1,6 @@
 # scripts/visuals.py
 
 import streamlit as st
-from streamlit_lottie import st_lottie
-import requests
 
 def aplicar_estilo():
     st.set_page_config(
